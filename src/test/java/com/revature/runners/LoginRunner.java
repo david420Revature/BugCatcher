@@ -6,7 +6,7 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features/login", glue = "com.revature.steps")
+@CucumberOptions(features = "classpath:features/login", glue = "com.revature.steps.login")
 public class LoginRunner {
     public static WebDriver chromeDriver;
     public static Page page;

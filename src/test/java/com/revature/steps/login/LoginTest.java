@@ -1,4 +1,4 @@
-package com.revature.steps;
+package com.revature.steps.login;
 
 import com.revature.pages.LoginPage;
 import com.revature.runners.LoginRunner;

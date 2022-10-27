@@ -30,6 +30,11 @@ public class LoginPage extends Page {
         );
     }
 
+    public Page login(String username, String password) {
+        elements.get("usernameInput").sendKeys(username);
+        elements.get("passwordInput").sendKeys(password);
+        return login();
+    }
     public Page login() {
         click("loginButton");
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100));
