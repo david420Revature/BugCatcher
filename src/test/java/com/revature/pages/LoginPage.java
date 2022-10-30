@@ -3,6 +3,7 @@ package com.revature.pages;
 import org.openqa.selenium.By;
 import org.openqa.selenium.NoAlertPresentException;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -10,33 +11,32 @@ import java.time.Duration;
 import java.util.HashMap;
 
 public class LoginPage extends Page {
+
     public LoginPage(WebDriver driver) {
         super(driver);
-        elements = new HashMap<>();
+    }
 
-        elements.put(
-                "usernameInput",
-                driver.findElement(By.name("username"))
-        );
+    public static LoginPage from(Page page) {
+        return new LoginPage(page.driver);
+    }
 
-        elements.put(
-                "passwordInput",
-                driver.findElement(By.name("pass"))
-        );
-
-        elements.put(
-                "loginButton",
-                driver.findElement(By.tagName("button"))
-        );
+    public static WebElement usernameInput(Page page) {
+        return page.driver.findElement(By.name("username"));
+    }
+    public static WebElement passwordInput(Page page) {
+        return page.driver.findElement(By.name("pass"));
+    }
+    public static WebElement loginButton(Page page) {
+        return page.driver.findElement(By.tagName("button"));
     }
 
     public Page login(String username, String password) {
-        elements.get("usernameInput").sendKeys(username);
-        elements.get("passwordInput").sendKeys(password);
+        LoginPage.usernameInput(this).sendKeys(username);
+        LoginPage.passwordInput(this).sendKeys(password);
         return login();
     }
     public Page login() {
-        click("loginButton");
+        LoginPage.loginButton(this).click();
         WebDriverWait wait = new WebDriverWait(driver, Duration.ofMillis(100));
         wait.until(
                 ExpectedConditions.or(
@@ -60,8 +60,10 @@ public class LoginPage extends Page {
         }
     }
 
-    @Override
-    public boolean validateURL() {
-        return this.getRelativeURL().equals("/");
+    public static boolean validate(Page page) {
+        return (
+                page instanceof LoginPage &&
+                page.getRelativeURL().equals("/")
+        );
     }
 }
