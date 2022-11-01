@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en-US">
   <head>
-      <base href="../"/>
-      <title>Defects</title>
+      <base href="../../"/>
+      <title>Test Case Report</title>
     <meta charset="utf-8"/>
     <meta name="author" content="David Hanzlik"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -29,18 +29,26 @@
           </ul>
       </nav>
   </header>
-  <main>
-  <h1>Defects</h1>
-  <h2>Open</h2>
-  <dl>
-      <dt><a href="defects/1/index.html">1</a></dt>
-      <dd>Sample Report</dd>
-  </dl>
-  <h2>Closed</h2>
-  <dl>
-      <dt><a href="defects/0/index.html">0</a></dt>
-      <dd>Place Holder</dd>
-  </dl>
-  </main>
+  <article>
+    <h1>Test Case Report</h1>
+    <dl>
+        <dt>ID</dt>
+        <dd>1</dd>
+        <dt>Name</dt>
+        <dd>Login with valid Credentials</dd>
+        <dt>Created By</dt>
+        <dd>David Hanzlik</dd>
+        <dt>Creation Date</dt>
+        <dd><time>11/1/2022</time></dd>
+        <dt>Description</dt>
+        <dd>The user should be able to login with valid username and password.</dd>
+        <dt>Feature File</dt>
+        <dd>
+            <a type="text/plain" href="features/login/login-positive.feature">login-positive</a>
+        </dd>
+        <dt>Feature Header</dt>
+        <dd>Scenario Outline: Login with correct credentials</dd>
+    </dl>
+  </article>
   </body>
 </html>
