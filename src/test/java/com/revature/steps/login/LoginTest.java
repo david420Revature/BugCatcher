@@ -1,33 +1,40 @@
 package com.revature.steps.login;
 
-import com.revature.pages.HomePage;
-import com.revature.pages.LoginPage;
-import com.revature.pages.Page;
-import com.revature.runners.LoginRunner;
+import com.revature.browser.Page;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
-import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
-import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.Cookie;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WindowType;
 import org.openqa.selenium.chrome.ChromeDriver;
 
-import java.util.Collection;
+import java.util.PriorityQueue;
 
 public class LoginTest {
 
-    private Page page;
-
+    private static WebDriver driver = new ChromeDriver();
+    private static PriorityQueue<Page> browser = new PriorityQueue<>();
+/*
     @Before
     public void setup() {
-        page = new Page(new ChromeDriver());
-        page.get(LoginRunner.home);
+        driver.get("https://www.google.com");
+        Page page = new Page(driver);
+        System.out.println(page.getHandle());
+        browser.add(page);
+        driver.switchTo().newWindow(WindowType.TAB);
+        page.switchFrom();
+        page = new Page(driver);
+        System.out.println(page.getHandle());
+        browser.add(page);
     }
 
     @After
     public void cleanup() {
-        page.quit();
+        Page closing = browser.remove();
+        while (closing != null) {
+            System.out.println("hello");
+            closing = browser.remove();
+        }
+        driver.quit();
     }
 
     @Given("The employee is on the login page")
@@ -76,5 +83,5 @@ public class LoginTest {
         String text = HomePage.greeting(page).getText();
         Assertions.assertTrue(text.contains(fullName));
     }
-
+*/
 }
