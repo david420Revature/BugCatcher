@@ -3,7 +3,11 @@ package com.revature.browser;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+
 public interface LoginComponent extends Component {
+
+    List<Account> getAccounts();
 
     default String getLoginUrl() {
         return "https://bugcatcher-jasdhir.coe.revaturelabs.com/?dev=4";
@@ -16,6 +20,16 @@ public interface LoginComponent extends Component {
     }
     default WebElement getLoginButton() {
         return getDriver().findElement(By.xpath("//button[text()='Login']"));
+    }
+
+    default void login(String type) {
+        for (Account account : getAccounts()) {
+            if (account.type.equals(type)) {
+                login(account.username, account.password);
+                return;
+            }
+        }
+        throw new RuntimeException("type of account not found");
     }
     default void login(String username, String password) {
         getUserNameInput().sendKeys(username);
