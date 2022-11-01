@@ -1,13 +1,18 @@
 package com.revature.browser;
 
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Page implements LoginComponent, HomeComponent {
+public class Page implements
+        LoginComponent, HomeComponent, TestCaseComponent,
+        MatricesComponent, DefectOverviewComponent, DefectReporterComponent
+{
     private WebDriver driver;
     private WebDriverWait wait;
 
@@ -43,7 +48,8 @@ public class Page implements LoginComponent, HomeComponent {
         driver.quit();
     }
 
-    public String getCurrentUrl() {
-        return this.driver.getCurrentUrl();
+    @Override
+    public String getDomain() {
+        return "https://bugcatcher-jasdhir.coe.revaturelabs.com";
     }
 }

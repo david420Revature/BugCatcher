@@ -60,7 +60,7 @@ public class LoginSteps {
     public void theEmployeeShouldBeOn(String role) {
         page.getWait().until(
             ExpectedConditions.urlToBe(
-                page.getHomeUrl(
+                page.getDomain() + page.getHomeTrailer(
                     role.toLowerCase()
                 )
             )

@@ -42,4 +42,8 @@ public interface LoginComponent extends Component {
             return ! driver.getCurrentUrl().equals(getLoginUrl());
         });
     }
+
+    default String getLoginTrailer() {
+        return "/?dev=4";
+    }
 }
