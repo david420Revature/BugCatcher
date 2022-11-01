@@ -1,71 +1,37 @@
 package com.revature.browser;
 
-import org.openqa.selenium.By;
-import java.util.HashMap;
-import java.util.function.BiFunction;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
-public class Page {
-    private final Browser browser;
-    private final String handle;
-    private final HashMap<String, By> components = new HashMap<>();
-    private String url;
+import java.time.Duration;
 
-    public Page(Browser browser) {
-        super();
-        this.browser = browser;
-        this.handle = browser.getDriver().getWindowHandle();
-        url = browser.getDriver().getCurrentUrl();
+public class Page implements LoginComponent, HomeComponent {
+    private WebDriver driver;
+    private WebDriverWait wait;
+
+    public Page(WebDriver driver) {
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofMillis(100));
+    }
+    @Override
+    public WebDriver getDriver() {
+        return driver;
     }
 
-    public Browser getBrowser() {
-        return browser;
-    }
-    public String getHandle() {
-        return this.handle;
-    }
-    public String getUrl() {
-        return url;
+    @Override
+    public WebDriverWait getWait() {
+        return wait;
     }
 
-    public Component component(String key) {
-        By by = components.get(key);
-        return new Component(this, by);
-
+    public void get(String url) {
+        driver.get(url);
     }
 
-    public void replaceAll(BiFunction<? super String, ? super By, ? extends By> set) {
-        components.replaceAll(set);
+    public void quit() {
+        driver.quit();
     }
 
-    public void switchTo() {
-        browser.getDriver().switchTo().window(handle);
-        browser.getWait().until(driver -> {
-            return driver.getWindowHandle().equals(handle);
-        });
-    }
-
-    public void switchFrom() {
-        browser.getWait().until(driver -> {
-            return ! driver.getWindowHandle().equals(handle);
-        });
-    }
-
-    public void updateUrl() {
-        browser.getWait().until(driver -> {
-            return ! driver.getCurrentUrl().equals(url);
-        });
-        url = browser.getDriver().getCurrentUrl();
-    }
-
-    public void updateUrl(String otherUrl) {
-        browser.getWait().until(driver -> {
-            return driver.getCurrentUrl().equals(otherUrl);
-        });
-        url = otherUrl;
-    }
-
-    public void close() {
-        browser.getDriver().close();
-        switchFrom();
+    public String getCurrentUrl() {
+        return this.driver.getCurrentUrl();
     }
 }

@@ -1,3 +1,3 @@
 package com.revature.runners;
 
-public interface Runner {}
+public abstract class Runner {}
