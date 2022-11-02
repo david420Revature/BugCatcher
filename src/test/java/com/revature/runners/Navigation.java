@@ -7,4 +7,4 @@ import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "classpath:features/navigation", glue = "com.revature.steps.navigation")
-public class Navigation extends Runner {}
+public class Navigation {}

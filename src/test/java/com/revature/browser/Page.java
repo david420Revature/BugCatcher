@@ -52,4 +52,5 @@ public class Page implements
     public String getDomain() {
         return "https://bugcatcher-jasdhir.coe.revaturelabs.com";
     }
+
 }
