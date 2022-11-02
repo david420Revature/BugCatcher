@@ -17,9 +17,6 @@ public interface Component {
     }
     String getDomain();
 
-    default List<WebElement> getAnchors() {
-        return getDriver().findElements(By.xpath("//a[@href]"));
-    }
 
     default WebElement getAnchor(String linktext) {
         return getDriver().findElement(By.linkText(linktext));

@@ -1,71 +1,86 @@
 package com.revature.steps.navigation;
 
-import com.revature.browser.Page;
+import com.revature.browser.*;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Steps {
-
+    // these should probably be declared with the runner somehow
     private static Page page;
+    private static LoginPage loginPage;
+    private static HomePage homePage;
+    private static MatrixPage matrixPage;
+    private static TestCasesPage testCasesPage;
+    private static DefectReportPage defectReportPage;
+    private static DefectOverviewPage defectOverviewPage;
+    private static WebDriver driver;
 
     @Before
     public void setup() {
-        page = new Page(new ChromeDriver());
-        page.get(page.getLoginUrl());
+        driver = new ChromeDriver();
+        page = new Page(driver);
+        loginPage = new LoginPage(driver);
+        homePage = new HomePage(driver);
+        matrixPage = new MatrixPage(driver);
+        testCasesPage = new TestCasesPage(driver);
+        defectReportPage = new DefectReportPage(driver);
+        defectOverviewPage = new DefectOverviewPage(driver);
+        driver.get(loginPage.getURL());
     }
 
     @After
     public void cleanup() {
-        page.quit();
+        driver.quit();
     }
 
-    @Given("The manager is logged in as a manager")
-    public void the_manager_is_logged_in_as_a_manager() {
-        page.login("manager");
+    @Given("/The manager is logged in as a (\\w+)/")
+    public void the_manager_is_logged_in_as_a(String role) {
+        loginPage.login(role.toLowerCase());
     }
-    @Given("The manager is on the home page")
-    public void the_manager_is_on_the_home_page() {
-        if (!
-                page.getCurrentUrl().equals(page.getDomain() + page.getHomeTrailer("manager"))
-        ) throw new AssertionError("manager was not on the manager homepage");
+    @Given("/The (\\w+) is on the home page/")
+    public void the_manager_is_on_the_home_page(String role) {
+        homePage.validateHomeURL(role.toLowerCase()); // would be nice to have an enum of roles
     }
     @Then("The manager should see links for Matrices, Test Cases, Defect Reporting and Defect Overview")
     public void the_manager_should_see_links_for_matrices_test_cases_defect_reporting_and_defect_overview() {
+        ArrayList<Page> pages = new ArrayList<>();
+        Collections.addAll(
+            pages,
+            matrixPage,
+            testCasesPage,
+            defectReportPage,
+            defectOverviewPage
+        );
 
-        List<String> expecteds = new ArrayList<>();
-        expecteds.add(page.getDomain() + page.getTestCaseTrailer());
-        expecteds.add(page.getDomain() + page.getMatricesTrailer());
-        expecteds.add(page.getDomain() + page.getDefectReporterTrailer());
-        expecteds.add(page.getDomain() + page.getDefectOverviewTrailer());
-
-        List<String> actuals = page.getAnchors().stream().map(anchor -> {
-            return anchor.getAttribute("href");
-        }).collect(Collectors.toList());
-
-        expecteds.forEach(expected -> {
-            boolean match = actuals.stream().anyMatch(actual -> actual.equals(expected));
-            if (!match) throw new AssertionError("Unable to find " + expected);
+        List<WebElement> anchors = homePage.getNavAnchors();
+        pages.forEach(page -> {
+            boolean match = anchors.stream().anyMatch(anchor -> {
+                String href = anchor.getAttribute("href");
+                boolean result = page.validateURL(href);
+                return result;
+            });
+            if (!match) throw new AssertionError("Unable to find an expected nav link");
         });
     }
     @When("^The manager clicks on (.+)$")
     public void the_manager_clicks_on(String linktext) {
-        page.clink(linktext);
+        homePage.clink(linktext);
     }
     @Then("^The title of (?:the )?page should be (.+)$")
     public void the_title_of_the_page_should_be(String expectedTitle) {
-        String actualTitle = page.getTitle();
+        // maybe I should build from a page class
+        String actualTitle = homePage.getTitle();
         if (! expectedTitle.equals(actualTitle)) {
             throw new AssertionError(actualTitle + " page title did not match " + expectedTitle);
         }
@@ -75,10 +90,10 @@ public class Steps {
         page.back();
     }
 
-    @Then("The manager should be on the home page and the title of page is Home")
-    public void the_manager_should_be_on_the_home_page_and_the_title_of_page_is_home() {
-        // Write code here that turns the phrase above into concrete actions
-        throw new io.cucumber.java.PendingException("Unimplemented due to poor step definition");
+    @Then("^The manager should be on the home page and the title of page is (\\w+)$")
+    public void the_manager_should_be_on_the_home_page_and_the_title_of_page_is(String title) {
+        Assertions.assertTrue(homePage.validateURL(), "manager was not on homepage");
+        Assertions.assertTrue(driver.getTitle().equals(title));
     }
 
 }

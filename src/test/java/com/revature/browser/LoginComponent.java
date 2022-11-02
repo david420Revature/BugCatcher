@@ -9,9 +9,6 @@ public interface LoginComponent extends Component {
 
     List<Account> getAccounts();
 
-    default String getLoginUrl() {
-        return "https://bugcatcher-jasdhir.coe.revaturelabs.com/?dev=4";
-    }
     default WebElement getUserNameInput() {
       return getDriver().findElement(By.name("username"));
     }
@@ -37,9 +34,10 @@ public interface LoginComponent extends Component {
         login();
     }
     default void login() {
+        String startingURL = getDriver().getCurrentUrl();
         getLoginButton().click();
         getWait().until(driver -> {
-            return ! driver.getCurrentUrl().equals(getLoginUrl());
+            return ! driver.getCurrentUrl().equals(startingURL);
         });
     }
 

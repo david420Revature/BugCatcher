@@ -9,10 +9,7 @@ import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Page implements
-        LoginComponent, HomeComponent, TestCaseComponent,
-        MatricesComponent, DefectOverviewComponent, DefectReporterComponent
-{
+public class Page implements Component {
     private WebDriver driver;
     private WebDriverWait wait;
 
@@ -25,6 +22,7 @@ public class Page implements
         accounts.add(new Account("ryeGuy", "coolbeans", "tester"));
         accounts.add(new Account("cavalier89", "alucard", "tester"));
     }
+
     @Override
     public WebDriver getDriver() {
         return driver;
@@ -35,22 +33,25 @@ public class Page implements
         return wait;
     }
 
-    @Override
     public List<Account> getAccounts() {
         return accounts;
     }
-
-    public void get(String url) {
-        driver.get(url);
-    }
-
-    public void quit() {
-        driver.quit();
-    }
-
     @Override
     public String getDomain() {
         return "https://bugcatcher-jasdhir.coe.revaturelabs.com";
+    }
+
+    public void awaitURL() {
+        getWait().until(driver -> {
+           return validateURL();
+        });
+    }
+
+    public boolean validateURL(String url) {
+        return url.contains(getDomain());
+    }
+    public boolean validateURL() {
+        return validateURL(getDriver().getCurrentUrl());
     }
 
 }

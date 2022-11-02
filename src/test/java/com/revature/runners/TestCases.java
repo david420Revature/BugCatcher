@@ -11,8 +11,8 @@ import javax.swing.*;
 import java.time.Duration;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features/matrix", glue = "com.revature.steps.matrix")
-public class Matrix extends ManualRunner {
+@CucumberOptions(features = "classpath:features/testcases", glue = "com.revature.steps.testcases")
+public class TestCases extends ManualRunner {
 
     private JFrame window;
     public JFrame getWindow() {
@@ -21,7 +21,7 @@ public class Matrix extends ManualRunner {
     public WebDriverWait getWait() {
         return wait;
     }
-    public Matrix(WebDriver driver) {
+    public TestCases(WebDriver driver) {
         super();
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(60));
