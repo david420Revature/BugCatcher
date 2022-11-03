@@ -10,6 +10,8 @@ import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.util.Arrays;
+
 public class Steps {
 
     private static LoginPage loginpage;
@@ -33,7 +35,7 @@ public class Steps {
 
     // @When() @Then() are also matched by @Given()
     @Given("^(.+)$")
-    public void manuall(String prompt) {
+    public void manual(String prompt) {
         gui.prompt(prompt, "failed: " + prompt);
     }
 
