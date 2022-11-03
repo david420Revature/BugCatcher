@@ -2,6 +2,7 @@ Feature: Defect Status
 
 #Declarative Style
 
+    #5
     Scenario: Change Status
         Given The tester is on the Home Page 
         Then The tester can can see only defects assigned to them

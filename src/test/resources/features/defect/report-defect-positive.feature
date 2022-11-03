@@ -1,5 +1,6 @@
 Feature: Defect Reporting 
 
+    #8
     Scenario: Report New Defect
         Given The employee is on the Defect Reporter Page 
         When The employee selects todays date 

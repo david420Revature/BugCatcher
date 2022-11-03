@@ -1,5 +1,6 @@
 Feature: Login
 
+    #3
     Scenario Outline: Login with correct credentials
         Given The employee is on the login page
         When  The employee types <username> into username input 

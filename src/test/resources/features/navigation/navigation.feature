@@ -1,12 +1,15 @@
 Feature: Navigation
 
+    #12
     Background: Logged in as a Manager
         Given The manager is logged in as a manager 
         Given The manager is on the home page
-    
+
+    #13
     Scenario: Home Page Links Visible
         Then The manager should see links for Matrices, Test Cases, Defect Reporting and Defect Overview 
 
+    #14
     Scenario: Back Navigation
         When The manager clicks on Matrices 
         Then The title of the page should be Matrix Page 
@@ -15,7 +18,8 @@ Feature: Navigation
         When The manager clicks on Test Cases
         When The manager clicks the browser back button 
         Then The manager should be on the home page and the title of page is Home 
-    
+
+    #15
     Scenario Outline: All Links Viable 
         Then The manager should see links for Matrices, Test Cases, Defect Reporting and Defect Overview 
         When The manager clicks on <link>

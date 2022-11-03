@@ -1,5 +1,6 @@
 Feature: Defect Reporting
 
+    #6
     Scenario: Steps too short
         Given The employee is on the Defect Reporter Page 
         When The employee selects todays date 
@@ -17,6 +18,7 @@ Feature: Defect Reporting
         When The employee clicks the report button 
         Then No confirmation dialog appears
 
+    #19
     Scenario: Description too short
         Given The employee is on the Defect Reporter Page 
         When The employee selects todays date 
@@ -35,6 +37,7 @@ Feature: Defect Reporting
         When The employee clicks the report button 
         Then No confirmation dialog appears
 
+    #7
     Scenario: No Date Selected
         Given The employee is on the Defect Reporter Page 
         When The employee types in "Description" with
