@@ -1,10 +1,12 @@
-package com.revature.browser;
+package com.revature.pages;
 
+import com.revature.components.HeaderComponent;
+import com.revature.components.PendingDefectsTableComponent;
 import org.openqa.selenium.WebDriver;
 
 import java.util.regex.Pattern;
 
-public class HomePage extends Page implements WelcomeComponent, HeaderComponent {
+public class HomePage extends Page implements HeaderComponent, PendingDefectsTableComponent {
 
     private Pattern urlValidator = Pattern.compile(
             "^" + getDomain() + "/(\\w+)home$"
@@ -14,9 +16,7 @@ public class HomePage extends Page implements WelcomeComponent, HeaderComponent 
     }
 
     public boolean validateHomeURL(String role) {
-        String expectedURL = getDomain() + "/" + role + "home";
-        String actualURL = getDriver().getCurrentUrl();
-        return actualURL.equals(expectedURL);
+        return validateHomeURL(role, getDriver().getCurrentUrl());
     }
 
     public boolean validateHomeURL(String role, String url) {

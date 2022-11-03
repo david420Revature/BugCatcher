@@ -34,6 +34,8 @@ public class Manual extends ManualRunner {
         window.setSize(700, 200);
     }
 
+
+
     public void prompt(String promptMessage, String failMessage) {
         getWindow().setVisible(true);
         setText(promptMessage);
@@ -43,4 +45,9 @@ public class Manual extends ManualRunner {
         getWindow().setVisible(false);
         if (getFail() || getStop()) Assertions.fail(failMessage);
     }
+
+    public void prompt(String message) {
+        prompt(message, "could not: " + message);
+    }
+
 }

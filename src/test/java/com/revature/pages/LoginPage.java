@@ -1,6 +1,9 @@
-package com.revature.browser;
+package com.revature.pages;
 
+import com.revature.components.LoginComponent;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 
 import java.util.regex.Pattern;
 
@@ -21,5 +24,9 @@ public class LoginPage extends Page implements LoginComponent {
     public boolean validateURL(String url) {
         boolean result = urlValidator.matcher(url).find();
         return result;
+    }
+    @Override
+    public WebElement getLoginElement() {
+        return getDriver().findElement(By.xpath("/html/body//fieldset[1]"));
     }
 }

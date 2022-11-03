@@ -1,7 +1,7 @@
 package com.revature.steps.login;
 
-import com.revature.browser.HomePage;
-import com.revature.browser.LoginPage;
+import com.revature.pages.HomePage;
+import com.revature.pages.LoginPage;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;

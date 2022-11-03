@@ -41,4 +41,8 @@ public class TestCases extends ManualRunner {
         getWindow().setVisible(false);
         if (getFail() || getStop()) Assertions.fail(failMessage);
     }
+
+    public void prompt(String message) {
+        prompt(message, "could not: " + message);
+    }
 }

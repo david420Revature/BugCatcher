@@ -1,5 +1,6 @@
-package com.revature.browser;
+package com.revature.pages;
 
+import com.revature.components.HeaderComponent;
 import org.openqa.selenium.WebDriver;
 
 public class DefectReportPage extends Page implements HeaderComponent {

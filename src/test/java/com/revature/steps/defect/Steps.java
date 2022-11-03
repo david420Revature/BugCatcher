@@ -1,6 +1,9 @@
 package com.revature.steps.defect;
 
-import com.revature.browser.*;
+import com.revature.customs.PendingDefect;
+import com.revature.customs.PendingDefectsTable;
+import com.revature.pages.*;
+import com.revature.pages.doms.Account;
 import com.revature.runners.Defect;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
@@ -8,10 +11,14 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class Steps {
     // these should probably be declared with the runner somehow
+
+    private static PendingDefect pendingDefect;
+    private static PendingDefectsTable pendingDefectsTable;
     private static Page page;
     private static LoginPage loginPage;
     private static HomePage homePage;
@@ -20,11 +27,12 @@ public class Steps {
     private static DefectReportPage defectReportPage;
     private static DefectOverviewPage defectOverviewPage;
     private static WebDriver driver;
-
     private static Defect gui;
+    private static Account manager;
 
     @Before
     public void setup() {
+        manager = Account.getAccountOfRole("manager");
         driver = new ChromeDriver();
         gui = new Defect(driver);
         page = new Page(driver);
@@ -44,27 +52,22 @@ public class Steps {
 
     @Given("The manager is logged in as a manager")
     public void the_manager_is_logged_in_as_a_manager() {
-        gui.prompt(
-                "The manager is logged in as a manager",
-                "The manager was not logged in as a manager"
-        );
+        manager.login(loginPage, homePage);
     }
     @Given("The manager is on the home page")
     public void the_manager_is_on_the_home_page() {
-        gui.prompt(
-                "The manager is on the home page",
-                "The manager was not on the home page"
-        );
+        homePage.validateURL();
     }
     @Then("The manager should see pending defects")
     public void the_manager_should_see_pending_defects() {
-        gui.prompt(
-                "The manager should see pending defects",
-                "The manager did not see pending defects"
-        );
+        pendingDefectsTable = homePage.getPendingDefectsTableElement();
     }
     @When("The manager clicks on the select button for a defect")
     public void the_manager_clicks_on_the_select_button_for_a_defect() {
+
+        pendingDefect = pendingDefectsTable.getPendingDefects().get(0);
+        pendingDefect.select();
+        System.out.println(pendingDefect.getText());
         gui.prompt(
                 "The manager clicks on the select button for a defect",
                 "The manager could not click on the select button for a defect"

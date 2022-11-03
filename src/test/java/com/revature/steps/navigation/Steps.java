@@ -1,6 +1,7 @@
 package com.revature.steps.navigation;
 
-import com.revature.browser.*;
+import com.revature.pages.*;
+import com.revature.pages.doms.Account;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -25,9 +26,12 @@ public class Steps {
     private static DefectReportPage defectReportPage;
     private static DefectOverviewPage defectOverviewPage;
     private static WebDriver driver;
+    private static Account manager;
+    private static Account tester;
 
     @Before
     public void setup() {
+        manager = Account.getAccountOfRole("manager");
         driver = new ChromeDriver();
         page = new Page(driver);
         loginPage = new LoginPage(driver);
@@ -46,7 +50,7 @@ public class Steps {
 
     @Given("/The manager is logged in as a (\\w+)/")
     public void the_manager_is_logged_in_as_a(String role) {
-        loginPage.login(role.toLowerCase());
+        manager.login(loginPage, homePage);
     }
     @Given("/The (\\w+) is on the home page/")
     public void the_manager_is_on_the_home_page(String role) {
@@ -63,7 +67,7 @@ public class Steps {
             defectOverviewPage
         );
 
-        List<WebElement> anchors = homePage.getNavAnchors();
+        List<WebElement> anchors = homePage.getHeaderAnchors();
         pages.forEach(page -> {
             boolean match = anchors.stream().anyMatch(anchor -> {
                 String href = anchor.getAttribute("href");

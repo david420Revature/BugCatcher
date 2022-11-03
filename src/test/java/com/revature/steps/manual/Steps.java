@@ -1,16 +1,12 @@
 package com.revature.steps.manual;
 
-import com.revature.browser.*;
+import com.revature.pages.*;
 import com.revature.runners.Manual;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
-import io.cucumber.java.en.Then;
-import io.cucumber.java.en.When;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
-import java.util.Arrays;
 
 public class Steps {
 
