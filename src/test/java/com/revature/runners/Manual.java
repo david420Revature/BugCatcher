@@ -10,9 +10,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import javax.swing.*;
 import java.time.Duration;
 
+// be aware, default prompts may cause manual testers to pass failing negative tests
 // edit the features = "classpath:features/<suite>" for additional testing
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features/login", glue = "com.revature.steps.manual")
+@CucumberOptions(features = "classpath:features/defect", glue = "com.revature.steps.manual")
 public class Manual extends ManualRunner {
 
     private JFrame window;
