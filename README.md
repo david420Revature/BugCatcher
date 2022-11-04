@@ -3,7 +3,7 @@ open in IntelliJ
 suites
 - *Runner
 
-Execute Runner class to run test suite.
+Execute Runner class' to run test suites.
 Some test suites are only semi-automated.
-A pop up applet will appear to prompt the user from step to step to perform the neccessary tests.
+A pop up applet will appear with prompts to perform the neccessary tests.
 
