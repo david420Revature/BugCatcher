@@ -103,6 +103,7 @@ public class Steps {
     @Given("^The (?:assigned )?tester is on the(?:ir)? [hH]ome [pP]age$")
     public void the_assigned_tester_is_on_their_home_page() {
         if (!homePage.validateHomeURL("tester")) {
+            if (!loginPage.validateURL()) homePage.logout();
             tester.login(loginPage, homePage);
         }
     }
@@ -182,7 +183,7 @@ public class Steps {
     public void no_confirmation_dialog_appears() {
         try {
             defectReportPage.getDriver().switchTo().alert();
-            Assertions.fail("a confirmation dialog appeared");
+            Assertions.fail("A tester was able to prompt the creation of a defect with an invalid steps field");
         }
         catch(NoAlertPresentException e) {}
     }

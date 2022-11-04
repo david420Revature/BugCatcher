@@ -35,6 +35,7 @@ public class Steps {
     private static TestCaseTable testCaseTable;
     private static TestCaseRow testCase;
     private static TestCaseReportDialog dialog;
+    private static CaseEditorPage caseEditorPage;
 
 
     @Before
@@ -48,6 +49,7 @@ public class Steps {
         testCasesPage = new TestCasesPage(driver);
         defectReportPage = new DefectReportPage(driver);
         defectOverviewPage = new DefectOverviewPage(driver);
+        caseEditorPage = new CaseEditorPage(driver);
         driver.get(loginPage.getURL());
         tester = Account.getAccountOfRole("tester");
     }
@@ -58,9 +60,11 @@ public class Steps {
     }
 
     @Given("The tester is on the test case dashboard")
-    public void the_tester_is_on_the_test_case_dashboard() {
-        tester.login(loginPage, homePage);
-        homePage.clink("Test Cases");
+    public void goToDashboard() {
+        if (loginPage.validateURL()) {
+            tester.login(loginPage, homePage);
+            homePage.clink("Test Cases");
+        }
         testCasesPage.validateURL();
         testCaseTable = testCasesPage.getTestCaseTable();
         testCaseForm = testCasesPage.getTestCaseSubmitalForm(testCaseTable);
@@ -132,11 +136,14 @@ public class Steps {
         Assertions.assertTrue(!dialog.isDisplayed(), "dialog was still open");
     }
     @Given("the tester is on the test case editor for a specific test case")
-    public void the_tester_is_on_the_test_case_editor_for_a_specific_test_case() {
-        gui.prompt(
-"the tester is on the test case editor for a specific test case",
-"the tester was not on the test case editor for a specific test case"
-        );
+    public void goToCaseEditorForSpecificCase() {
+        if (caseEditorPage.validateURL()) {
+          page.back();
+        }
+        goToDashboard();
+        String id = testCase.getID();
+        testCase.getDetails().editCase();
+        caseEditorPage.getID().equals(id);
     }
     @Then("The fields should be uneditable")
     public void the_fields_should_be_uneditable() {
@@ -203,11 +210,11 @@ public class Steps {
     }
     @When("The Tester clicks on edit within the modal")
     public void the_tester_clicks_on_edit_within_the_modal() {
-        gui.prompt("The Tester clicks on edit within the modal");
+        dialog.editCase();
     }
     @Then("The Tester should be on the case editor for that case")
     public void the_tester_should_be_on_the_case_editor_for_that_case() {
-        gui.prompt("The Tester should be on the case editor for that case");
+        goToCaseEditorForSpecificCase();
     }
     @When("The tester clicks on the edit button")
     public void the_tester_clicks_on_the_edit_button() {

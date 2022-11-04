@@ -86,7 +86,7 @@ public class Steps {
         // maybe I should build from a page class
         String actualTitle = homePage.getTitle();
         if (! expectedTitle.equals(actualTitle)) {
-            throw new AssertionError(actualTitle + " page title did not match " + expectedTitle);
+            throw new AssertionError("actual page title "+ actualTitle + " page title did not match expected page title " + expectedTitle);
         }
     }
     @When("The manager clicks the browser back button")

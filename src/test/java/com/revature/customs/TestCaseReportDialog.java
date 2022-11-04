@@ -30,7 +30,7 @@ public class TestCaseReportDialog extends CustomElement {
            "//button/descendant-or-self::*[text()='Edit']"
         ));
         performedBy = findElement(By.xpath(
-           "//h4/following-sibling::p[text()='No One']"
+           "//h4[text()='Performed By']/following-sibling::p"
         ));
     }
 
@@ -48,6 +48,13 @@ public class TestCaseReportDialog extends CustomElement {
         closeButton.click();
         component.getWait().until(driver -> {
             return ! this.isDisplayed();
+        });
+    }
+
+    public void editCase() {
+        editButton.click();
+        component.getWait().until(driver -> {
+            return ! component.validateURL(driver.getCurrentUrl());
         });
     }
 }
