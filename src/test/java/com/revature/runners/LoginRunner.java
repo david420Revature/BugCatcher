@@ -6,5 +6,5 @@ import io.cucumber.junit.CucumberOptions;
 import org.junit.runner.RunWith;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features/navigation", glue = "com.revature.steps.navigation")
-public class Navigation {}
+@CucumberOptions(features = "classpath:features/login", glue = "com.revature.steps.login")
+public class LoginRunner {}

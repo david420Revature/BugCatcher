@@ -19,4 +19,9 @@ public interface HeaderComponent extends Component {
     default List<WebElement> getHeaderAnchors() {
         return getHeaderElement().findElements(By.xpath("//a[@href]"));
     }
+
+    default void logout() {
+        clink("Log Out");
+    }
+
 }

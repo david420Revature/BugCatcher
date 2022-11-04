@@ -94,4 +94,13 @@ public abstract class CustomElement implements WebElement {
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
         return this.element.getScreenshotAs(target);
     }
+
+    public WebElement getChild(String tagName, int index) {
+        index++;
+        return findElement(
+            By.xpath(
+         tagName + "[" + index + "]"
+            )
+        );
+    }
 }

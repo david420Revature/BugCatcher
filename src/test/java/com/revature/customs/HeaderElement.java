@@ -1,4 +1,9 @@
 package com.revature.customs;
 
-public class HeaderElement {
+import org.openqa.selenium.WebElement;
+
+public class HeaderElement extends CustomElement {
+    public HeaderElement(WebElement element) {
+        super(element);
+    }
 }

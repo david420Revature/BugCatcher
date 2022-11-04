@@ -11,8 +11,8 @@ import javax.swing.*;
 import java.time.Duration;
 
 @RunWith(Cucumber.class)
-@CucumberOptions(features = "classpath:features/testcases", glue = "com.revature.steps.testcases")
-public class TestCases extends ManualRunner {
+@CucumberOptions(features = "classpath:features/defect", glue = "com.revature.steps.defect")
+public class DefectRunner extends ManualRunner {
 
     private JFrame window;
     public JFrame getWindow() {
@@ -21,7 +21,7 @@ public class TestCases extends ManualRunner {
     public WebDriverWait getWait() {
         return wait;
     }
-    public TestCases(WebDriver driver) {
+    public DefectRunner(WebDriver driver) {
         super();
         this.driver = driver;
         this.wait = new WebDriverWait(driver, Duration.ofSeconds(60));
@@ -40,9 +40,5 @@ public class TestCases extends ManualRunner {
         });
         getWindow().setVisible(false);
         if (getFail() || getStop()) Assertions.fail(failMessage);
-    }
-
-    public void prompt(String message) {
-        prompt(message, "could not: " + message);
     }
 }

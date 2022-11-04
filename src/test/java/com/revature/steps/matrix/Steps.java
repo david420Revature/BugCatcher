@@ -1,7 +1,7 @@
 package com.revature.steps.matrix;
 
 import com.revature.pages.*;
-import com.revature.runners.Matrix;
+import com.revature.runners.MatrixRunner;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -21,12 +21,12 @@ public class Steps {
     private static DefectOverviewPage defectOverviewPage;
     private static WebDriver driver;
 
-    private static Matrix gui;
+    private static MatrixRunner gui;
 
     @Before
     public void setup() {
         driver = new ChromeDriver();
-        gui = new Matrix(driver);
+        gui = new MatrixRunner(driver);
         page = new Page(driver);
         loginPage = new LoginPage(driver);
         homePage = new HomePage(driver);

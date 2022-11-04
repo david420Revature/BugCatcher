@@ -1,7 +1,7 @@
 package com.revature.steps.testcases;
 
 import com.revature.pages.*;
-import com.revature.runners.TestCases;
+import com.revature.runners.TestCasesRunner;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -21,12 +21,12 @@ public class Steps {
     private static DefectOverviewPage defectOverviewPage;
     private static WebDriver driver;
 
-    private static TestCases gui;
+    private static TestCasesRunner gui;
 
     @Before
     public void setup() {
         driver = new ChromeDriver();
-        gui = new TestCases(driver);
+        gui = new TestCasesRunner(driver);
         page = new Page(driver);
         loginPage = new LoginPage(driver);
         homePage = new HomePage(driver);

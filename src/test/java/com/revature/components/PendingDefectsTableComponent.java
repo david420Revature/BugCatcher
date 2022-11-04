@@ -11,13 +11,13 @@ public interface PendingDefectsTableComponent extends Component {
 
     default PendingDefectsTable getPendingDefectsTableElement() {
         return new PendingDefectsTable(
-                getDriver().findElement(
-                By.xpath("//table[thead[tr[th[text()='Defect ID']]]]")
-            )
+            getDriver().findElement(
+                By.xpath(
+                "//table[thead[tr[th[text()='Defect ID']]]]"
+                )
+            ),
+            this
         );
     };
-
-
-
 
 }

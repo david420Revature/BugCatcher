@@ -1,17 +1,18 @@
 package com.revature.steps.defect;
 
-import com.revature.customs.PendingDefect;
-import com.revature.customs.PendingDefectsTable;
+import com.revature.customs.*;
+import com.revature.doms.Defect;
 import com.revature.pages.*;
-import com.revature.pages.doms.Account;
-import com.revature.runners.Defect;
+import com.revature.doms.Account;
+import com.revature.runners.DefectRunner;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.jupiter.api.Assertions;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class Steps {
@@ -27,14 +28,22 @@ public class Steps {
     private static DefectReportPage defectReportPage;
     private static DefectOverviewPage defectOverviewPage;
     private static WebDriver driver;
-    private static Defect gui;
+    private static DefectRunner gui;
     private static Account manager;
+    private static Account tester;
+
+    private static DefectAssigner defectAssigner;
+    private static MyDefects myDefects;
+    private static CollapsibleDefect collapsibleDefect;
+    private static String defectID;
+    private static String defectStatus;
 
     @Before
     public void setup() {
+        tester = Account.getAccountOfRole("tester");
         manager = Account.getAccountOfRole("manager");
         driver = new ChromeDriver();
-        gui = new Defect(driver);
+        gui = new DefectRunner(driver);
         page = new Page(driver);
         loginPage = new LoginPage(driver);
         homePage = new HomePage(driver);
@@ -64,91 +73,87 @@ public class Steps {
     }
     @When("The manager clicks on the select button for a defect")
     public void the_manager_clicks_on_the_select_button_for_a_defect() {
-
         pendingDefect = pendingDefectsTable.getPendingDefects().get(0);
-        pendingDefect.select();
-        System.out.println(pendingDefect.getText());
-        gui.prompt(
-                "The manager clicks on the select button for a defect",
-                "The manager could not click on the select button for a defect"
-        );
+        defectID = pendingDefect.getID();
+        defectAssigner = pendingDefect.select();
+        Assertions.assertTrue(defectAssigner.isDisplayed());
     }
     @Then("The defect description should appear in bold")
     public void the_defect_description_should_appear_in_bold() {
-        gui.prompt(
-                "The defect description should appear in bold",
-                "The defect description did not appear in bold"
+        Assertions.assertTrue(
+            pendingDefect.getDescription().getText().equals(
+                    defectAssigner.getMessage().getText()
+            )
+        );
+        Assertions.assertTrue(
+          defectAssigner.getMessage().getCssValue(
+                  "font-weight"
+          ).equals("700")
         );
     }
     @When("The manager selects an tester from the drop down")
     public void the_manager_selects_an_tester_from_the_drop_down() {
-        gui.prompt(
-                "The manager selects an tester from the drop down",
-                "The manager could not select an tester from the drop down"
-        );
+        defectAssigner.select(0);
     }
     @When("The manager clicks assign")
     public void the_manager_clicks_assign() {
-        gui.prompt(
-          "The manager clicks assign",
-                "The manager could not click assign"
-        );
+        defectAssigner.assign();
     }
     @Then("The defect should disappear from the list")
     public void the_defect_should_disappear_from_the_list() {
-        gui.prompt(
-                "The defect should disappear from the list",
-                "The defect did not disappear from the list"
-        );
+        try {
+            pendingDefect.isDisplayed();
+            throw new AssertionError("Pending defect is still displayed");
+        }
+        catch (StaleElementReferenceException e) {}
     }
-    @Given("The assigned tester is on their home page")
+    @Given("^The (?:assigned )?tester is on the(?:ir)? [hH]ome [pP]age$")
     public void the_assigned_tester_is_on_their_home_page() {
-        gui.prompt(
-"The assigned tester is on their home page",
-    "The assigned tester was not on their home page"
-        );
+        if (!homePage.validateHomeURL("tester")) {
+            tester.login(loginPage, homePage);
+        }
     }
     @Then("The tester should see the pending defect")
     public void the_tester_should_see_the_pending_defect() {
-        gui.prompt(
-"The tester should see the pending defect",
-    "The tester could not see the pending defect"
-        );
-    }
-    @Given("The tester is on the Home Page")
-    public void the_tester_is_on_the_home_page() {
-        gui.prompt(
-"The tester is on the Home Page",
- "The test was not on the Home Page"
-        );
+        myDefects = homePage.getMyDefectsElement();
+        collapsibleDefect = myDefects.getDefect(defectID);
     }
     @Then("The tester can can see only defects assigned to them")
     public void the_tester_can_can_see_only_defects_assigned_to_them() {
-        gui.prompt(
-"The tester can can see only defects assigned to them",
-"The tester could see defects that were not assigned to them"
-        );
+        myDefects = homePage.getMyDefectsElement();
+        for (CollapsibleDefect defect : myDefects.getDefects()) {
+            String assignment = defect.getAssigned();
+            Assertions.assertTrue(
+                assignment.equals(tester.getUsername())
+            );
+        }
     }
     @When("The tester changes to defect to any status")
     public void the_tester_changes_to_defect_to_any_status() {
-        gui.prompt(
-"The tester changes to defect to any status",
-    "The tester could not changes to defect to any status"
-        );
+        collapsibleDefect = myDefects.getDefects().get(0);
+        defectStatus = collapsibleDefect.getStatus();
+        defectStatus =
+                defectStatus.equals(Defect.validStatuses[0]) ?
+                Defect.validStatuses[1] :
+                Defect.validStatuses[0];
+        collapsibleDefect.setStatus(defectStatus);
     }
     @Then("The tester should see the defect has a different status")
     public void the_tester_should_see_the_defect_has_a_different_status() {
-        gui.prompt(
-"The tester should see the defect has a different status",
-"The tester could not see that the defect had a different status"
-        );
+        // because we set defectStatus to the new status, we can check for a match
+        defectStatus.equals(collapsibleDefect.getStatus());
     }
     @Given("The employee is on the Defect Reporter Page")
     public void the_employee_is_on_the_defect_reporter_page() {
-        gui.prompt(
-          "The employee is on the Defect Reporter Page",
-          "The employee was not on the Defect Reporter Page"
-        );
+        if (!defectReportPage.validateURL()) {
+            if (loginPage.validateURL()) {
+                manager.login(loginPage, homePage);
+                homePage.clink("Report a Defect"); // could use method
+            }
+            else {
+                throw new Error("unimplemented");
+            }
+        }
     }
     @When("The employee selects todays date")
     public void the_employee_selects_todays_date() {

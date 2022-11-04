@@ -1,7 +1,7 @@
 package com.revature.steps.navigation;
 
 import com.revature.pages.*;
-import com.revature.pages.doms.Account;
+import com.revature.doms.Account;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;

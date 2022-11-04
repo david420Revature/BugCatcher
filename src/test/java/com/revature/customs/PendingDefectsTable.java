@@ -1,5 +1,6 @@
 package com.revature.customs;
 
+import com.revature.components.PendingDefectsTableComponent;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -7,8 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PendingDefectsTable extends CustomElement {
-    public PendingDefectsTable(WebElement element) {
+
+    private PendingDefectsTableComponent component;
+    public PendingDefectsTable(WebElement element, PendingDefectsTableComponent component) {
         super(element);
+        this.component = component;
     }
 
     public List<PendingDefect> getPendingDefects() {
@@ -16,7 +20,7 @@ public class PendingDefectsTable extends CustomElement {
                 By.xpath("tbody//tr")
         );
         return elements.stream().map(element -> {
-            return new PendingDefect(element);
+            return new PendingDefect(element, component);
         }).collect(Collectors.toList());
     }
 }

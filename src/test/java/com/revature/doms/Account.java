@@ -1,4 +1,4 @@
-package com.revature.pages.doms;
+package com.revature.doms;
 
 import com.revature.pages.Page;
 import com.revature.components.LoginComponent;
@@ -48,7 +48,6 @@ public class Account {
     }
 
     public void login(LoginComponent component, Page target) {
-        String currentURL = component.getDriver().getCurrentUrl();
         component.getUserNameInput().sendKeys(username);
         component.getPasswordInput().sendKeys(password);
         component.getLoginButton().click();

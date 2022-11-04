@@ -1,12 +1,13 @@
 package com.revature.pages;
 
 import com.revature.components.HeaderComponent;
+import com.revature.components.MyDefectsComponent;
 import com.revature.components.PendingDefectsTableComponent;
 import org.openqa.selenium.WebDriver;
 
 import java.util.regex.Pattern;
 
-public class HomePage extends Page implements HeaderComponent, PendingDefectsTableComponent {
+public class HomePage extends Page implements HeaderComponent, PendingDefectsTableComponent, MyDefectsComponent {
 
     private Pattern urlValidator = Pattern.compile(
             "^" + getDomain() + "/(\\w+)home$"
