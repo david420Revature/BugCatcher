@@ -12,7 +12,7 @@ import java.time.Duration;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "classpath:features/testcases", glue = "com.revature.steps.testcases")
-public class TestCasesRunner extends ManualRunner {
+public class TestCasesRunner extends GUI {
 
     private JFrame window;
     public JFrame getWindow() {

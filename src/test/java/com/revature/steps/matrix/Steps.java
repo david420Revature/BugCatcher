@@ -60,7 +60,7 @@ public class Steps {
     @When("A manager creates a title for a matrix")
     public void a_manager_creates_a_title_for_a_matrix() {
         gui.prompt(
-"A manager creates a title for a matrix",
+"A manager creates a title for a matrix (remember for later)",
     "A manager could not a title for a matrix"
         );
     }
@@ -77,17 +77,28 @@ public class Steps {
 "A manager saves a matrix",
 "A manager could not save a matrix"
         );
+        // an alert is generated that needs to be dismissed
+        try {
+            page.getAlert().dismiss();
+        }
+        catch (Exception e) {
+            // in case the user dismissed the alert
+        }
     }
     @Then("The matrix should be visible for all testers and managers")
     public void the_matrix_should_be_visible_for_all_testers_and_managers() {
+        // this prompt assumes we are on the matrices page
+        homePage.clink("Matrices");
         gui.prompt(
-            "The matrix should be visible for all testers and managers",
-                "The matrix was not visible for all testers and managers"
+            "Check that the matrix was created",
+                "The tester could not find the created matrix"
         );
     }
 
     @Given("A manager or tester has selected a matrix")
     public void a_manager_or_tester_has_selected_a_matrix() {
+        // this prompt assumes wer are on the Matrices page
+        homePage.clink("Matrices");
         gui.prompt(
 "A manager or tester has selected a matrix",
     "A manager or tester couldn't select a matrix"
@@ -113,11 +124,21 @@ public class Steps {
 "A manager or tester confirms their changes",
     "A manager or tester could not confirm their changes"
         );
+        // an alert is generated that needs to be dismissed
+        try {
+            page.getAlert().dismiss();
+        }
+        catch (Exception e) {
+            // in case the user dismissed the alert
+        }
     }
     @Then("Then the matrix should saved")
     public void then_the_matrix_should_saved() {
+        // because refreshing the page does not work
+        matrixPage.clink("Home");
+        homePage.clink("Matrices");
         gui.prompt(
-"Then the matrix should saved",
+"Then the matrix should be saved",
     "Thee matrix was not saved"
         );
     }

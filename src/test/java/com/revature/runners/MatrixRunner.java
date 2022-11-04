@@ -12,7 +12,7 @@ import java.time.Duration;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(features = "classpath:features/matrix", glue = "com.revature.steps.matrix")
-public class MatrixRunner extends ManualRunner {
+public class MatrixRunner extends GUI {
 
     private JFrame window;
     public JFrame getWindow() {

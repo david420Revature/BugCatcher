@@ -1,98 +1,53 @@
 package com.revature.runners;
 
-
 import io.cucumber.junit.Cucumber;
 import io.cucumber.junit.CucumberOptions;
+import org.junit.jupiter.api.Assertions;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import javax.swing.*;
-import java.awt.*;
-        import java.awt.event.ActionEvent;
-        import java.awt.event.ActionListener;
 import java.time.Duration;
 
-public abstract class ManualRunner extends JPanel implements ActionListener {
+// be aware, docType prompts are unsupported
+// edit the features = "classpath:features/<suite>" for manual testing
+@RunWith(Cucumber.class)
+@CucumberOptions(features = "classpath:features/login", glue = "com.revature.steps.manual")
+public class ManualRunner extends GUI {
 
-    private boolean fail = false;
-    private boolean state = false;
-    private boolean stop = false;
-    private JLabel prompt;
-    private JButton nextButton;
-    private JButton failButton;
-    private JButton stopButton;
-
-    protected WebDriver driver;
-    protected WebDriverWait wait;
-    public boolean getFail() {
-        return fail;
+    private JFrame window;
+    public JFrame getWindow() {
+        return window;
     }
-
-    public boolean getStop() {
-        return stop;
+    public WebDriverWait getWait() {
+        return wait;
     }
-
-    public ManualRunner() {
-        prompt = new JLabel("replace this text with setText(String text)",JLabel.CENTER);
-
-        nextButton = new JButton("Next");
-        nextButton.addActionListener(this);
-
-        failButton = new JButton("Fail");
-        failButton.addActionListener(this);
-
-        stopButton = new JButton("Unimplemented");
-        stopButton.addActionListener(this);
-
-        JPanel controls = new JPanel();
-
-        controls.setLayout(new GridLayout(1,3));
-
-        controls.add(nextButton);
-        controls.add(failButton);
-        controls.add(stopButton);
-
-        setLayout(new GridLayout(2,1));
-        add(prompt);
-        add(controls);
-
-
-        setBorder(BorderFactory.createLineBorder(Color.BLUE, 2));
-    }
-
-    public boolean ready() {
-        if (state) {
-            state = false;
-            return true;
-        }
-        else return state;
-    }
-
-    public void fail() {
-        fail = true;
-        ready();
-    }
-
-    public void stop() {
-        stop = true;
-        ready();
-    }
-
-    public void setText(String text) {
-        prompt.setText(text);
+    public ManualRunner(WebDriver driver) {
+        super();
+        this.driver = driver;
+        this.wait = new WebDriverWait(driver, Duration.ofSeconds(60));
+        window = new JFrame("Test");
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setContentPane(this);
+        window.setLocation(120, 70);
+        window.setSize(700, 200);
     }
 
 
 
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        Object source = e.getSource();
-        if (source.equals(failButton)) {
-            fail = true;
-        }
-        state = true;
+    public void prompt(String promptMessage, String failMessage) {
+        getWindow().setVisible(true);
+        setText(promptMessage);
+        getWait().until(driver -> {
+            return ready();
+        });
+        getWindow().setVisible(false);
+        if (getFail() || getStop()) Assertions.fail(failMessage);
+    }
+
+    public void prompt(String message) {
+        prompt(message, "could not: " + message);
     }
 
 }
-

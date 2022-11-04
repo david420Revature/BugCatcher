@@ -1,7 +1,7 @@
 package com.revature.steps.manual;
 
 import com.revature.pages.*;
-import com.revature.runners.Manual;
+import com.revature.runners.ManualRunner;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
@@ -13,12 +13,12 @@ public class Steps {
     private static LoginPage loginpage;
     private static WebDriver driver;
 
-    private static Manual gui;
+    private static ManualRunner gui;
 
     @Before
     public void setup() {
         driver = new ChromeDriver();
-        gui = new Manual(driver);
+        gui = new ManualRunner(driver);
         loginpage = new LoginPage(driver);
 
         driver.get(loginpage.getURL());
@@ -30,9 +30,10 @@ public class Steps {
     }
 
     // @When() @Then() are also matched by @Given()
-    @Given("^(.+)$")
+    @Given("^([^$]+)$")
     public void manual(String prompt) {
-        gui.prompt(prompt, "failed: " + prompt);
+        gui.prompt(prompt);
     }
+
 
 }
