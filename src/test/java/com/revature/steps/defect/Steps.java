@@ -11,24 +11,18 @@ import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import org.junit.jupiter.api.Assertions;
-import org.openqa.selenium.StaleElementReferenceException;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class Steps {
     // these should probably be declared with the runner somehow
-
     private static PendingDefect pendingDefect;
     private static PendingDefectsTable pendingDefectsTable;
     private static Page page;
     private static LoginPage loginPage;
     private static HomePage homePage;
-    private static MatrixPage matrixPage;
-    private static TestCasesPage testCasesPage;
     private static DefectReportPage defectReportPage;
-    private static DefectOverviewPage defectOverviewPage;
     private static WebDriver driver;
-    private static DefectRunner gui;
     private static Account manager;
     private static Account tester;
 
@@ -37,20 +31,19 @@ public class Steps {
     private static CollapsibleDefect collapsibleDefect;
     private static String defectID;
     private static String defectStatus;
+    private static DefectReportForm defectReportForm;
+    private static DefectReportAlert confirmationAlert;
+    private static DefectReportDialog confirmationDialog;
 
     @Before
     public void setup() {
         tester = Account.getAccountOfRole("tester");
         manager = Account.getAccountOfRole("manager");
         driver = new ChromeDriver();
-        gui = new DefectRunner(driver);
         page = new Page(driver);
         loginPage = new LoginPage(driver);
         homePage = new HomePage(driver);
-        matrixPage = new MatrixPage(driver);
-        testCasesPage = new TestCasesPage(driver);
         defectReportPage = new DefectReportPage(driver);
-        defectOverviewPage = new DefectOverviewPage(driver);
         driver.get(loginPage.getURL());
     }
 
@@ -154,87 +147,72 @@ public class Steps {
                 throw new Error("unimplemented");
             }
         }
+        // setting this up whenever we go to this page
+        defectReportForm = defectReportPage.getDefectReportForm();
     }
     @When("The employee selects todays date")
     public void the_employee_selects_todays_date() {
-        gui.prompt(
-                "The employee selects todays date",
-                "The employee could not select todays date"
-        );
+        defectReportForm.setToday();
     }
     @When("The employee types in {string} with")
     public void the_employee_types_in_with(String string, String docString) {
-        gui.prompt(
-"The employee types in {string} with "
-                + " " + string
-                + " " + docString,
-    "The employee could not type in {string} with "
-                        + " " + string
-                        + " " + docString
-        );
+        if (string.equals("Description")) {
+            defectReportForm.setDescription(docString);
+        }
+        else if (string.equals("Steps")){
+            defectReportForm.setReproductionSteps(docString);
+        }
+        else {
+            throw new Error(string + " prompt not known");
+        }
     }
-    @When("The employee selects high priority")
-    public void the_employee_selects_high_priority() {
-        gui.prompt(
-"The employee selects high priority",
-    "The employee could not high priority"
-        );
+    @When("^The employee selects (\\w+) priority$")
+    public void the_employee_selects_priority(String priority) {
+        defectReportForm.setPriority(priority);
     }
-    @When("The employee selects low severity")
-    public void the_employee_selects_low_severity() {
-        gui.prompt(
-          "The employee selects low severity",
-          "The employee could not select low severity"
-        );
+    @When("^The employee selects (\\w+) severity$")
+    public void the_employee_selects_severity(String severity) {
+        defectReportForm.setSeverity(severity);
     }
     @When("The employee clicks the report button")
     public void the_employee_clicks_the_report_button() {
-        gui.prompt(
-"The employee clicks the report button",
-"The employee could not click the report button"
-        );
+        defectReportForm.getReportButton().click();
     }
     @Then("No confirmation dialog appears")
     public void no_confirmation_dialog_appears() {
-        gui.prompt(
-"No confirmation dialog appears",
-    "A confirmation dialog appeared"
-        );
+        try {
+            defectReportPage.getDriver().switchTo().alert();
+            Assertions.fail("a confirmation dialog appeared");
+        }
+        catch(NoAlertPresentException e) {}
     }
     @Then("There should be a confirmation box")
     public void there_should_be_a_confirmation_box() {
-        gui.prompt(
-"There should be a confirmation box",
-    "There was not a confirmation box"
-        );
+        Alert alert = defectReportPage.getAlert();
+        confirmationAlert = new DefectReportAlert(alert, defectReportPage);
     }
     @When("The employee clicks Ok")
     public void the_employee_clicks_ok() {
-        gui.prompt(
-"The employee clicks Ok",
-    "The employee could not clicks Ok"
-        );
+        confirmationDialog = confirmationAlert.ok();
     }
     @Then("A modal should appear with a Defect ID")
     public void a_modal_should_appear_with_a_defect_id() {
-        gui.prompt(
-"A modal should appear with a Defect ID",
-    "A modal did not appear with a Defect ID"
+        Assertions.assertTrue(
+                confirmationDialog.getID().length() > 0,
+                "No ID was present"
         );
     }
     @When("The employee clicks close")
     public void the_employee_clicks_close() {
-        gui.prompt(
-"The employee clicks close",
-    "The employee could not clicks close"
-        );
+        confirmationDialog.close();
     }
     @Then("The modal should disappear")
     public void the_modal_should_disappear() {
-        gui.prompt(
-"The modal should disappear",
-"The modal did not disappear"
-        );
+        try {
+            page.getAlert();
+            Assertions.fail("alert still exists");
+        }
+        catch (TimeoutException e) {}
     }
 
 

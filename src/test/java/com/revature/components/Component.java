@@ -41,4 +41,16 @@ public interface Component {
             return ! driver.getCurrentUrl().equals(currentUrl);
         });
     }
+
+    default void awaitURL() {
+        getWait().until(driver -> {
+            return validateURL();
+        });
+    }
+    default boolean validateURL(String url) {
+        return url.contains(getDomain());
+    }
+    default boolean validateURL() {
+        return validateURL(getDriver().getCurrentUrl());
+    }
 }
