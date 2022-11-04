@@ -1,5 +1,7 @@
 package com.revature.steps.testcases;
 
+import com.revature.customs.TestCaseSubmitalForm;
+import com.revature.doms.Account;
 import com.revature.pages.*;
 import com.revature.runners.TestCasesRunner;
 import io.cucumber.java.After;
@@ -22,6 +24,8 @@ public class Steps {
     private static WebDriver driver;
 
     private static TestCasesRunner gui;
+    private static Account tester;
+    private static TestCaseSubmitalForm testCaseForm;
 
     @Before
     public void setup() {
@@ -35,6 +39,7 @@ public class Steps {
         defectReportPage = new DefectReportPage(driver);
         defectOverviewPage = new DefectOverviewPage(driver);
         driver.get(loginPage.getURL());
+        tester = Account.getAccountOfRole("tester");
     }
 
     @After
@@ -44,20 +49,29 @@ public class Steps {
 
     @Given("The tester is on the test case dashboard")
     public void the_tester_is_on_the_test_case_dashboard() {
-        gui.prompt(
-"The tester is on the test case dashboard",
-                "The tester was not on the test case dashboard"
-        );
+        tester.login(loginPage, homePage);
+        homePage.clink("Test Cases");
+        testCasesPage.validateURL();
+        testCaseForm = testCasesPage.getTestCaseSubmitalForm();
     }
     @When("The tester types {string} into input with")
-    public void the_tester_types_into_input_with(String string, String docString) {
-        gui.prompt(
-    "The tester types " +string + " into input with" + docString,
-        "The tester could not type " +string + " into input with" + docString
-        );
+    public void the_tester_types_into_input_with(String fieldDescription, String docString) {
+        if (fieldDescription.equals("Description")) {
+            testCaseForm.setDescription(docString);
+        }
+        else if (fieldDescription.equals("Steps")) {
+            testCaseForm.setSteps(docString);
+        }
+        else {
+            throw new Error("Unable to understand field description");
+        }
     }
     @When("^The tester presses the (\\w+) button$")
     public void the_tester_presses_the_button(String buttonName) {
+        if (buttonName.equals("submit")) {
+            testCaseForm.getSubmitButton().click();
+        }
+        else throw new Error("Unable to find button with name");
         gui.prompt(
 "The tester presses the " + buttonName + " button",
 "The tester could not press the " + buttonName + " button"
