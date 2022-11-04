@@ -1,6 +1,9 @@
 package com.revature.steps.testcases;
 
+import com.revature.customs.TestCaseReportDialog;
+import com.revature.customs.TestCaseRow;
 import com.revature.customs.TestCaseSubmitalForm;
+import com.revature.customs.TestCaseTable;
 import com.revature.doms.Account;
 import com.revature.pages.*;
 import com.revature.runners.TestCasesRunner;
@@ -9,8 +12,11 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.jupiter.api.Assertions;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.List;
 
 public class Steps {
     // these should probably be declared with the runner somehow
@@ -26,6 +32,10 @@ public class Steps {
     private static TestCasesRunner gui;
     private static Account tester;
     private static TestCaseSubmitalForm testCaseForm;
+    private static TestCaseTable testCaseTable;
+    private static TestCaseRow testCase;
+    private static TestCaseReportDialog dialog;
+
 
     @Before
     public void setup() {
@@ -52,7 +62,12 @@ public class Steps {
         tester.login(loginPage, homePage);
         homePage.clink("Test Cases");
         testCasesPage.validateURL();
-        testCaseForm = testCasesPage.getTestCaseSubmitalForm();
+        testCaseTable = testCasesPage.getTestCaseTable();
+        testCaseForm = testCasesPage.getTestCaseSubmitalForm(testCaseTable);
+        // because a feature calls for a testcase without a selection step
+        List<TestCaseRow> rows = testCaseTable.getRows();
+        // grabbing the test case created in the previous scenario
+        testCase = rows.get(rows.size() - 1);
     }
     @When("The tester types {string} into input with")
     public void the_tester_types_into_input_with(String fieldDescription, String docString) {
@@ -69,62 +84,52 @@ public class Steps {
     @When("^The tester presses the (\\w+) button$")
     public void the_tester_presses_the_button(String buttonName) {
         if (buttonName.equals("submit")) {
-            testCaseForm.getSubmitButton().click();
+            List<TestCaseRow> rows = testCaseTable.getRows();
+            int last = rows.size() - 1;
+            testCase = testCaseTable.getRows().get(last);
+            assert testCase.equals(testCaseTable.getRows().get(last));
+            testCaseForm.submit();
         }
-        else throw new Error("Unable to find button with name");
-        gui.prompt(
-"The tester presses the " + buttonName + " button",
-"The tester could not press the " + buttonName + " button"
-        );
+        else throw new Error("Unable to find button with name: " + buttonName);
+
     }
     @Then("The test case should appear at the bottom of the table")
     public void the_test_case_should_appear_at_the_bottom_of_the_table() {
-        gui.prompt(
-    "The test case should appear at the bottom of the table",
-        "The test case did not appear at the bottom of the table"
-        );
+        TestCaseRow staleCase = testCase;
+        List<TestCaseRow> rows = testCaseTable.getRows();
+        int last = rows.size() - 1;
+        testCase = rows.get(last);
+        Assertions.assertNotEquals(staleCase, testCase);
     }
     @Then("The test case result should say UNEXECUTED")
     public void the_test_case_result_should_say_unexecuted() {
-        gui.prompt(
-"The test case result should say UNEXECUTED",
-    "The test case result did not say UNEXECUTED"
-        );
+        testCase.getResult().equals("UNEXECUTED");
     }
-    @When("The tester presses on details")
+    @When("^The tester (?:presses|clicks) on details$")
     public void the_tester_presses_on_details() {
-        gui.prompt(
-    "The tester presses on details",
-    "The tester could not press on details"
-        );
+        dialog = testCase.getDetails();
     }
     @Then("A test case modal should appear showing the case ID")
     public void a_test_case_modal_should_appear_showing_the_case_id() {
-        gui.prompt(
-"A test case modal should appear showing the case ID",
-    "A test case modal did not appear showing the case ID"
+        Assertions.assertTrue(
+                dialog.getID().length() > 0,
+                "dialog was missing testcase id"
         );
     }
     @Then("The performed by field should say No One")
     public void the_performed_by_field_should_say_no_one() {
-        gui.prompt(
-"The performed by field should say No One",
-    "The performed by field did not say No One"
+        Assertions.assertEquals(
+                dialog.getPerformedBy(),
+                "No One"
         );
     }
     @When("The tester presses the close buttton")
     public void the_tester_presses_the_close_buttton() {
-        gui.prompt(
-"The tester presses the close buttton",
-"The tester could not press the close button"
-        );
+        dialog.close();
     }
     @Then("The Modal Should be closed")
     public void the_modal_should_be_closed() {
-        gui.prompt(
-          "The Modal should be closed",
-          "The Modal did not close"
-        );
+        Assertions.assertTrue(!dialog.isDisplayed(), "dialog was still open");
     }
     @Given("the tester is on the test case editor for a specific test case")
     public void the_tester_is_on_the_test_case_editor_for_a_specific_test_case() {
@@ -194,13 +199,6 @@ public class Steps {
         gui.prompt(
 "The fields should be populated to their old values",
 "The fields were not populated to their old values"
-        );
-    }
-    @When("The tester clicks on details")
-    public void the_tester_clicks_on_details() {
-        gui.prompt(
-"The tester clicks on details",
-    "The tester could not click on details"
         );
     }
     @When("The Tester clicks on edit within the modal")

@@ -7,6 +7,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+// may be better though of as implementers, then parts of web elements can be components
 public interface Component {
     WebDriver getDriver();
     WebDriverWait getWait();

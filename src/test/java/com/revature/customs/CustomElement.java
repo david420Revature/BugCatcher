@@ -95,6 +95,20 @@ public abstract class CustomElement implements WebElement {
         return this.element.getScreenshotAs(target);
     }
 
+    @Override
+    public boolean equals(Object custom) {
+        try {
+            return this.element.equals(((CustomElement) custom).element);
+        }
+        catch (ClassCastException e) {
+            return false;
+        }
+    }
+    @Override
+    public int hashCode() {
+        return this.element.hashCode();
+    }
+
     public WebElement getChild(String tagName, int index) {
         index++;
         return findElement(

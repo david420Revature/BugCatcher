@@ -1,5 +1,6 @@
 package com.revature.steps.matrix;
 
+import com.revature.doms.Account;
 import com.revature.pages.*;
 import com.revature.runners.MatrixRunner;
 import io.cucumber.java.After;
@@ -22,6 +23,7 @@ public class Steps {
     private static WebDriver driver;
 
     private static MatrixRunner gui;
+    private static Account manager;
 
     @Before
     public void setup() {
@@ -35,6 +37,8 @@ public class Steps {
         defectReportPage = new DefectReportPage(driver);
         defectOverviewPage = new DefectOverviewPage(driver);
         driver.get(loginPage.getURL());
+        manager = Account.getAccountOfRole("manager");
+        manager.login(loginPage, homePage);
     }
 
     @After
@@ -44,10 +48,7 @@ public class Steps {
 
     @Given("A manager is on their home page")
     public void a_manager_is_on_their_home_page() {
-        gui.prompt(
-"A manager is on their home page",
-    "A manager was not on their home page"
-        );
+        homePage.validateHomeURL("manager");
     }
     @Then("A manager can pull up a form to make a new matrix")
     public void a_manager_can_pull_up_a_form_to_make_a_new_matrix() {

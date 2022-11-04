@@ -4,16 +4,21 @@ import com.revature.components.TestCaseDashComponent;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
+import java.util.List;
+
 // very good candidate to extend an abstract form class
 public class TestCaseSubmitalForm extends CustomElement {
 
     private TestCaseDashComponent component;
+    private TestCaseTable targetTable;
     private WebElement descriptionField;
     private WebElement stepsField;
     private WebElement submitButton;
-    public TestCaseSubmitalForm(WebElement element, TestCaseDashComponent component) {
+    public TestCaseSubmitalForm(WebElement element, TestCaseTable targetTable, TestCaseDashComponent component) {
         super(element);
         this.component = component;
+        this.targetTable = targetTable;
+
         descriptionField = findElement(By.name(
             "desc"
         ));
@@ -33,7 +38,11 @@ public class TestCaseSubmitalForm extends CustomElement {
         stepsField.sendKeys(text);
     }
 
-    public WebElement getSubmitButton() {
-        return submitButton;
+    public void submit() {
+        int staleSize = targetTable.getRows().size();
+        submitButton.click();
+        component.getWait().until(driver -> {
+            return targetTable.getRows().size() > staleSize;
+        });
     }
 }
